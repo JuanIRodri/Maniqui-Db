@@ -20,6 +20,18 @@ La base de datos está estructurada jerárquicamente para permitir una personali
 3.  **Cabeza**: Centraliza los rasgos faciales y accesorios (`Ojos`, `Boca`, `Nariz`, `Cabello`, `Cuernos`).
 4.  **Detalles Faciales**: Tablas específicas para `Pestanias`, `Cejas` y variaciones de forma/color.
 
+## Relaciones y Cardinalidad
+
+El modelo sigue una estructura de composición jerárquica:
+
+*   **Personaje 1:1 Cuerpo**: Cada personaje posee una configuración única de cuerpo (relación `N:1` en base de datos, lógicamente `1:1`).
+*   **Cuerpo 1:1 [Brazo, Pierna, Torso, Cabeza]**: El cuerpo es un contenedor que referencia a sus partes fundamentales.
+*   **Cabeza 1:1 [Ojos, Cabello, Boca, Nariz, Cuernos]**: La cabeza centraliza todos los rasgos faciales y accesorios superiores.
+*   **Ojos 1:1 [Pestanias, Cejas]**: Los ojos definen el marco visual mediante estas dos sub-entidades.
+*   **Brazo 1:1 FormaBrazo**: Define la estética y tipo de extremidad superior.
+
+*Nota: En la implementación física, se utilizan relaciones `N:1` mediante claves foráneas (FK) para permitir la reutilización de configuraciones predefinidas de partes entre diferentes personajes.*
+
 ## Uso
 
 Para implementar esta base de datos y probar las consultas:
