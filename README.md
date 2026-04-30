@@ -1,46 +1,52 @@
-# Maniquí Database
+# Maniquí Database 👤
 
-Este proyecto contiene el diseño y los datos iniciales para la base de datos `Maniqui`, orientada a la gestión y personalización de las características físicas de figuras o personajes.
+Este proyecto contiene el diseño detallado y los datos iniciales para la base de datos `Maniqui`, un sistema orientado a la gestión y personalización exhaustiva de las características físicas de figuras o personajes.
+
+## Diagrama EER
+![Modelo Entidad Relación](./sentencias-sql/Imagen%20Base%20de%20Datos.png)
 
 ## Estructura del Proyecto
 
 El repositorio está organizado de la siguiente manera:
 
-*   **sentencias-sql/**: Carpeta que contiene los scripts necesarios para la base de datos.
-    *   `creaciones.sql`: Define la estructura de las tablas, relaciones y restricciones de integridad.
-    *   `inserciones.sql`: Contiene un conjunto de datos iniciales para pruebas y desarrollo.
-    *   `consultas.sql`: Consultas de ejemplo para extraer información combinada de las tablas.
+*   **sentencias-sql/**: Carpeta raíz de los scripts SQL y documentación visual.
+    *   `creaciones.sql`: Definición de tablas, relaciones y restricciones.
+    *   `inserciones.sql`: Datos maestros y de ejemplo para pruebas.
+    *   `consultas.sql`: Ejemplos de consultas complejas (JOINs).
+    *   `vistas.sql`: Capa de abstracción para facilitar el acceso a datos comunes.
+    *   `EER Diagram.mwb`: Archivo fuente de MySQL Workbench.
 
 ## Modelo de Datos
 
-La base de datos está estructurada jerárquicamente para permitir una personalización detallada:
+La base de datos utiliza una arquitectura de **composición jerárquica**, permitiendo una granularidad total en la definición de cada parte del personaje:
 
-1.  **Personaje**: Entidad principal que agrupa las dimensiones generales.
-2.  **Cuerpo y Torso**: Define la estructura física central y las extremidades (`Brazo`, `Pierna`).
-3.  **Cabeza**: Centraliza los rasgos faciales y accesorios (`Ojos`, `Boca`, `Nariz`, `Cabello`, `Cuernos`).
-4.  **Detalles Faciales**: Tablas específicas para `Pestanias`, `Cejas` y variaciones de forma/color.
+### Entidades Principales
+| Categoría | Tablas Relacionadas | Atributos Clave |
+| :--- | :--- | :--- |
+| **Global** | `Personaje` | Altura, Musculatura |
+| **Estructura** | `Cuerpo`, `Torso`, `Brazo`, `Pierna` | Tamaño, Forma, Vello, Tipo |
+| **Cabeza** | `Cabeza`, `Boca`, `Nariz`, `Cabello`, `Cuernos` | Corte, Tinte, Forma, Cantidad |
+| **Detalle Facial** | `Ojos`, `Pestanias`, `Cejas` | Color, Forma, Tinte |
 
-## Relaciones y Cardinalidad
-
-El modelo sigue una estructura de composición jerárquica:
-
-*   **Personaje 1:1 Cuerpo**: Cada personaje posee una configuración única de cuerpo (relación `N:1` en base de datos, lógicamente `1:1`).
-*   **Cuerpo 1:1 [Brazo, Pierna, Torso, Cabeza]**: El cuerpo es un contenedor que referencia a sus partes fundamentales.
-*   **Cabeza 1:1 [Ojos, Cabello, Boca, Nariz, Cuernos]**: La cabeza centraliza todos los rasgos faciales y accesorios superiores.
-*   **Ojos 1:1 [Pestanias, Cejas]**: Los ojos definen el marco visual mediante estas dos sub-entidades.
-*   **Brazo 1:1 FormaBrazo**: Define la estética y tipo de extremidad superior.
-
-*Nota: En la implementación física, se utilizan relaciones `N:1` mediante claves foráneas (FK) para permitir la reutilización de configuraciones predefinidas de partes entre diferentes personajes.*
+## Vistas Especializadas
+Se han incluido vistas para simplificar la obtención de perfiles completos de personajes sin necesidad de escribir múltiples JOINs:
+*   **`v_rasgos_basicos`**: Resumen de altura, musculatura y forma de cabeza.
+*   **`v_estetica_cabeza`**: Consolidado de rasgos faciales (ojos, cabello, cuernos).
+*   **`v_fisico_cuerpo`**: Detalle técnico de torso y extremidades.
 
 ## Uso
 
-Para implementar esta base de datos y probar las consultas:
+Para implementar la base de datos:
 
-1.  Ejecute el script `sentencias-sql/creaciones.sql` para crear la base de datos `Maniqui` y sus tablas.
-2.  Ejecute el script `sentencias-sql/inserciones.sql` para poblar las tablas con los datos de ejemplo.
-3.  Utilice el archivo `sentencias-sql/consultas.sql` para ver ejemplos de cómo consultar la información relacionada.
+1.  **Creación**: Ejecute `sentencias-sql/creaciones.sql`. Esto creará el esquema `Maniqui`.
+2.  **Carga de datos**: Ejecute `sentencias-sql/inserciones.sql` para tener un entorno de pruebas listo.
+3.  **Vistas**: Ejecute `sentencias-sql/vistas.sql` para habilitar las consultas simplificadas.
+4.  **Pruebas**: Explore los ejemplos en `sentencias-sql/consultas.sql`.
 
 ## Requisitos
 
-*   Servidor MariaDB (v11 o superior recomendado) o MySQL.
-*   Cliente SQL (HeidiSQL, MySQL Workbench, DBeaver o línea de comandos).
+*   **Motor**: MariaDB (v11+) o MySQL.
+*   **Herramientas**: Cualquier cliente SQL (DBeaver, HeidiSQL, MySQL Workbench).
+
+---
+*Este diseño permite que un mismo "Brazo" o "Ojos" puedan ser reutilizados por múltiples cuerpos si se desea crear una biblioteca de partes predefinidas.*
