@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: maniqui-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Maniqui
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sentencias-sql/creaciones.sql:/docker-entrypoint-initdb.d/1-creaciones.sql
+      - ./sentencias-sql/inserciones.sql:/docker-entrypoint-initdb.d/2-inserciones.sql
