@@ -21,20 +21,31 @@ async function migrate() {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    charset: 'utf8mb4'
   });
 
   try {
     console.log('--- Iniciando Migración MMORPG ---');
     
-    // 1. Añadir columnas si no existen
-    await connection.query(`
-      ALTER TABLE Personaje 
-      ADD COLUMN IF NOT EXISTS nombre VARCHAR(100),
-      ADD COLUMN IF NOT EXISTS clase VARCHAR(50),
-      ADD COLUMN IF NOT EXISTS nivel INT DEFAULT 1
-    `);
-    console.log('✅ Columnas añadidas (o ya existían).');
+    // 1. Añadir columnas
+    const columns = [
+      { name: 'nombre', definition: 'VARCHAR(100)' },
+      { name: 'clase', definition: 'VARCHAR(50)' },
+      { name: 'nivel', definition: 'INT DEFAULT 1' }
+    ];
+    for (const col of columns) {
+      try {
+        await connection.query(`ALTER TABLE Personaje ADD COLUMN ${col.name} ${col.definition}`);
+        console.log(`✅ Columna ${col.name} añadida.`);
+      } catch (err) {
+        if (err.code === 'ER_DUP_FIELDNAME') {
+          console.log(`ℹ️ La columna ${col.name} ya existe.`);
+        } else {
+          throw err;
+        }
+      }
+    }
 
     // 2. Actualizar datos
     for (const char of rpgData) {

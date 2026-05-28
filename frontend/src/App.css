@@ -168,9 +168,9 @@ header p {
 .detail-content {
   background: var(--bg-card);
   border: 1px solid rgba(255,255,255,0.1);
-  padding: 3rem;
+  padding: 2rem;
   border-radius: 24px;
-  max-width: 650px;
+  max-width: 900px;
   width: 100%;
   position: relative;
   box-shadow: 0 0 100px rgba(0,0,0,0.5);
@@ -180,7 +180,7 @@ header p {
 
 .detail-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .detail-header h2 {
@@ -222,7 +222,16 @@ header p {
 
 .detail-sections {
   display: grid;
-  gap: 2.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .detail-sections {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
 
 .detail-sections section h4 {
@@ -266,8 +275,8 @@ header p {
 .detail-actions {
   display: flex;
   gap: 1rem;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
   border-top: 1px solid rgba(255,255,255,0.1);
 }
 

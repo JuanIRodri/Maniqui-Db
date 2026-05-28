@@ -1,3 +1,4 @@
+SET NAMES utf8mb4;
 CREATE DATABASE IF NOT EXISTS `Maniqui`;
 USE `Maniqui`;
 
@@ -145,6 +146,9 @@ CREATE TABLE `Cuerpo` (
 -- Estructura de tabla para `Personaje`
 CREATE TABLE `Personaje` (
   `idPersonaje` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) DEFAULT NULL,
+  `clase` varchar(50) DEFAULT NULL,
+  `nivel` int(11) DEFAULT 1,
   `altura` int(11) DEFAULT NULL,
   `musculatura` int(11) DEFAULT NULL,
   `idCuerpo` int(11) NOT NULL,
