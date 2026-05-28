@@ -1,59 +1,105 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useState } from 'react'
+import { usePersonajes } from './hooks/usePersonajes'
+import { CharacterGrid } from './components/CharacterGrid'
+import { CharacterDetail } from './components/CharacterDetail'
+import { CharacterForm } from './components/CharacterForm'
 import './App.css'
 
 function App() {
-  const [personajes, setPersonajes] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { 
+    personajes, 
+    loading, 
+    error, 
+    fetchPersonajes, 
+    selectedCharacter, 
+    selectCharacter,
+    detailLoading,
+    handleCreate,
+    handleUpdate,
+    handleDelete
+  } = usePersonajes();
 
-  const fetchPersonajes = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get('http://localhost:3000/api/personajes')
-      setPersonajes(response.data)
-      setError(null)
-    } catch (err) {
-      console.error('Error fetching personajes:', err)
-      setError('No se pudo conectar con el servidor. Asegúrate de que el backend esté corriendo.')
-    } finally {
-      setLoading(false)
+  const [showForm, setShowForm] = useState(false);
+  const [editingCharacter, setEditingCharacter] = useState(null);
+
+  const openCreateForm = () => {
+    setEditingCharacter(null);
+    setShowForm(true);
+  };
+
+  const openEditForm = (character) => {
+    setEditingCharacter(character);
+    selectCharacter(null);
+    setShowForm(true);
+  };
+
+  const onFormSubmit = async (data) => {
+    if (editingCharacter) {
+      await handleUpdate(editingCharacter.idPersonaje, data);
+    } else {
+      await handleCreate(data);
     }
-  }
+    setShowForm(false);
+    setEditingCharacter(null);
+  };
 
-  useEffect(() => {
-    fetchPersonajes()
-  }, [])
+  const onFormCancel = () => {
+    setShowForm(false);
+    setEditingCharacter(null);
+  };
+
+  const onDeleteCharacter = async (id) => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este héroe?')) {
+      await handleDelete(id);
+    }
+  };
 
   return (
     <div className="container">
-      <h1>Maniquí Dashboard 👤</h1>
-      <p>Gestión y personalización de rasgos físicos</p>
-      
-      <button onClick={fetchPersonajes} className="refresh-btn">
-        🔄 Actualizar Datos
-      </button>
-
-      {loading && <p>Cargando personajes...</p>}
-      {error && <p className="error">{error}</p>}
-
-      {!loading && !error && (
-        <div className="grid">
-          {personajes.length === 0 ? (
-            <p>No hay personajes registrados.</p>
-          ) : (
-            personajes.map((p) => (
-              <div key={p.idPersonaje} className="card">
-                <h3>Personaje #{p.idPersonaje}</h3>
-                <div className="stats">
-                  <p><strong>📏 Altura:</strong> {p.altura} cm</p>
-                  <p><strong>💪 Musculatura:</strong> {p.musculatura}</p>
-                  <p><strong>👤 Cabeza:</strong> {p.Forma_Cabeza}</p>
-                </div>
-              </div>
-            ))
-          )}
+      <header>
+        <h1>Panel de Personajes</h1>
+        <p>Administra tu gremio y explora las habilidades de cada aventurero</p>
+        
+        <div className="header-actions">
+          <button onClick={fetchPersonajes} className="refresh-btn">
+            📜 Consultar Oráculo
+          </button>
+          <button onClick={openCreateForm} className="refresh-btn create-btn">
+            ➕ Nuevo Héroe
+          </button>
         </div>
+      </header>
+
+      <main>
+        {loading && <p>Cargando personajes...</p>}
+        {error && <p className="error">{error}</p>}
+
+        {!loading && !error && (
+          <CharacterGrid 
+            personajes={personajes} 
+            onCharacterClick={selectCharacter} 
+          />
+        )}
+      </main>
+
+      {/* Modal de Detalle */}
+      {detailLoading && <div className="detail-modal"><p>Cargando detalles...</p></div>}
+      {selectedCharacter && !detailLoading && (
+        <CharacterDetail 
+          character={selectedCharacter} 
+          onClose={() => selectCharacter(null)} 
+          onEdit={openEditForm}
+          onDelete={onDeleteCharacter}
+        />
+      )}
+
+      {/* Modal de Formulario */}
+      {showForm && (
+        <CharacterForm
+          initialData={editingCharacter}
+          onSubmit={onFormSubmit}
+          onCancel={onFormCancel}
+        />
       )}
     </div>
   )
