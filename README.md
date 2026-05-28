@@ -4,9 +4,25 @@ Este proyecto contiene el diseño detallado, los datos iniciales y un dashboard 
 
 ## 🚀 Inicio Rápido
 
-### 1. Base de Datos (Docker)
-Asegúrate de tener Docker instalado y funcionando. El motor de Docker se iniciará automáticamente en el arranque si has seguido la configuración previa.
+La forma más sencilla de arrancar todo el ecosistema (Base de Datos, Backend y Frontend) es utilizando el script de inicialización:
 
+```bash
+chmod +x start-app.sh
+./start-app.sh
+```
+
+Este script se encargará de:
+1. Levantar el contenedor de la base de datos con Docker.
+2. Instalar dependencias e iniciar el Backend.
+3. Instalar dependencias e iniciar el Frontend.
+
+---
+
+## 🛠️ Ejecución Manual
+
+Si prefieres ejecutar cada componente por separado:
+
+### 1. Base de Datos (Docker)
 ```bash
 docker compose up -d
 ```
