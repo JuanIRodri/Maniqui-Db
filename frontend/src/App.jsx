@@ -6,12 +6,12 @@ import { CharacterForm } from './components/CharacterForm'
 import './App.css'
 
 function App() {
-  const { 
-    personajes, 
-    loading, 
-    error, 
-    fetchPersonajes, 
-    selectedCharacter, 
+  const {
+    personajes,
+    loading,
+    error,
+    fetchPersonajes,
+    selectedCharacter,
     selectCharacter,
     detailLoading,
     handleCreate,
@@ -21,6 +21,7 @@ function App() {
 
   const [showForm, setShowForm] = useState(false);
   const [editingCharacter, setEditingCharacter] = useState(null);
+  const [viewMode, setViewMode] = useState('apariencia'); // 'apariencia' o 'estadistica'
 
   const openCreateForm = () => {
     setEditingCharacter(null);
@@ -59,10 +60,13 @@ function App() {
       <header>
         <h1>Panel de Personajes</h1>
         <p>Administra tu gremio y explora las habilidades de cada aventurero</p>
-        
+
         <div className="header-actions">
-          <button onClick={fetchPersonajes} className="refresh-btn">
-            📜 Consultar Oráculo
+          <button 
+            onClick={() => setViewMode(viewMode === 'apariencia' ? 'estadistica' : 'apariencia')} 
+            className="refresh-btn"
+          >
+            {viewMode === 'apariencia' ? '📊 Cambiar a Estadísticas' : '👤 Cambiar a Apariencias'}
           </button>
           <button onClick={openCreateForm} className="refresh-btn create-btn">
             ➕ Nuevo Héroe
@@ -75,9 +79,11 @@ function App() {
         {error && <p className="error">{error}</p>}
 
         {!loading && !error && (
-          <CharacterGrid 
-            personajes={personajes} 
-            onCharacterClick={selectCharacter} 
+          <CharacterGrid
+            personajes={personajes}
+            onCharacterClick={selectCharacter}
+            onEdit={openEditForm}
+            viewMode={viewMode}
           />
         )}
       </main>
@@ -85,11 +91,12 @@ function App() {
       {/* Modal de Detalle */}
       {detailLoading && <div className="detail-modal"><p>Cargando detalles...</p></div>}
       {selectedCharacter && !detailLoading && (
-        <CharacterDetail 
-          character={selectedCharacter} 
-          onClose={() => selectCharacter(null)} 
+        <CharacterDetail
+          character={selectedCharacter}
+          onClose={() => selectCharacter(null)}
           onEdit={openEditForm}
           onDelete={onDeleteCharacter}
+          viewMode={viewMode}
         />
       )}
 
@@ -99,6 +106,7 @@ function App() {
           initialData={editingCharacter}
           onSubmit={onFormSubmit}
           onCancel={onFormCancel}
+          viewMode={viewMode}
         />
       )}
     </div>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { CharacterCard } from './CharacterCard';
+import './CharacterGrid.css';
 
-export function CharacterGrid({ personajes, onCharacterClick }) {
+export function CharacterGrid({ personajes, onCharacterClick, onEdit, viewMode }) {
   if (personajes.length === 0) {
     return <p>No hay personajes registrados.</p>;
   }
@@ -13,6 +14,8 @@ export function CharacterGrid({ personajes, onCharacterClick }) {
           key={personaje.idPersonaje} 
           personaje={personaje} 
           onClick={onCharacterClick}
+          onEdit={onEdit}
+          viewMode={viewMode}
         />
       ))}
     </div>

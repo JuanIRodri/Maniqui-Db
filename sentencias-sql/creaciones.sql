@@ -156,3 +156,16 @@ CREATE TABLE `Personaje` (
   KEY `fk_personaje_cuerpo` (`idCuerpo`),
   CONSTRAINT `fk_personaje_cuerpo` FOREIGN KEY (`idCuerpo`) REFERENCES `Cuerpo` (`idCuerpo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Estructura de tabla para `Estadistica`
+CREATE TABLE `Estadistica` (
+  `idPersonaje` int(11) NOT NULL,
+  `fuerza` int(11) DEFAULT 10,
+  `destreza` int(11) DEFAULT 10,
+  `inteligencia` int(11) DEFAULT 10,
+  `constitucion` int(11) DEFAULT 10,
+  `agilidad` int(11) DEFAULT 10,
+  PRIMARY KEY (`idPersonaje`),
+  CONSTRAINT `fk_estadistica_personaje` FOREIGN KEY (`idPersonaje`) REFERENCES `Personaje` (`idPersonaje`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
