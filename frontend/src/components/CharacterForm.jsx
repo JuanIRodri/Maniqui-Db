@@ -40,7 +40,7 @@ export function CharacterForm({ onSubmit, onCancel, initialData, viewMode }) {
       boca_forma: 'Común', cabeza_forma: 'Ovalada', nariz_forma: 'Recta', torso_forma: 'Atlético',
       cuernos_cantidad: 0, cuernos_tamanio: 'N/A', cuernos_color: 'N/A', torso_bello: 0
     };
-    
+
     if (initialData) {
       return {
         ...base,
